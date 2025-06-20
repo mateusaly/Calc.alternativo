@@ -110,22 +110,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addEnvironment() {
-        const newEnvironment = environmentTemplate.cloneNode(true);
-        const stoneItemsContainer = newEnvironment.querySelector('.stone-items-container');
-        stoneItemsContainer.innerHTML = '';
-        ITENS_PEDRA.forEach(item => {
-            const uniqueId = `item-${Date.now()}-${Math.random()}`;
-            stoneItemsContainer.innerHTML += `
-                <div>
-                    <label><input type="checkbox" class="stone-item-cb" value="${item}"> ${item}</label>
-                    <div id="${uniqueId}" class="item-medidas hidden">
-                        <input type="number" step="1" min="0" class="medida" placeholder="Comprimento (cm)">
-                        <input type="number" step="1" min="0" class="medida" placeholder="Largura (cm)">
-                    </div>
-                </div>`;
-        });
-        environmentsContainer.appendChild(newEnvironment);
-    }
+    const newEnvironment = environmentTemplate.cloneNode(true);
+    const stoneItemsContainer = newEnvironment.querySelector('.stone-items-container');
+    stoneItemsContainer.innerHTML = '';
+    ITENS_PEDRA.forEach(item => {
+        const uniqueId = `item-${Date.now()}-${Math.random()}`;
+        // CÓDIGO ATUALIZADO COM OS 4 CAMPOS CONFORME SOLICITADO
+        stoneItemsContainer.innerHTML += `
+            <div>
+                <label><input type="checkbox" class="stone-item-cb" value="${item}"> ${item}</label>
+                <div id="${uniqueId}" class="item-medidas hidden">
+                    <input type="number" step="1" min="0" class="medida" placeholder="Comprimento (cm)">
+                    <input type="number" step="1" min="0" class="medida" placeholder="Largura (cm)">
+                    <input type="number" step="1" min="0" class="medida-opcional" placeholder="Medida Opcional (cm)">
+                    <input type="text" class="anotacao" placeholder="Anotações">
+                </div>
+            </div>`;
+    });
+    environmentsContainer.appendChild(newEnvironment);
+}
     
     function calculateTotal() { /* ... código da função como na penúltima resposta ... */ }
     function updateBreakdownUI(items, subtotal, frete, ajuste) { /* ... código da função como na penúltima resposta ... */ }
