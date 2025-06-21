@@ -13,7 +13,7 @@
     <div class="calculator-container">
         <h1>Calculadora de Orçamentos de Marmoraria</h1>
 
-        <form id="quote-form">
+        <form id="quote-form" onsubmit="return false;">
             
             <div class="form-section">
                 <h2>1. Consultar Orçamentos Anteriores</h2>
@@ -114,7 +114,7 @@
             <div class="form-section">
                 <h2>5. Resumo e Totais</h2>
                 <div id="cost-breakdown">
-                    <p class="breakdown-placeholder">Selecione itens para ver o resumo detalhado.</p>
+                    <p class="breakdown-placeholder">Preencha os campos para ver o resumo detalhado.</p>
                 </div>
 
                 <div class="totals-grid">
@@ -124,14 +124,14 @@
                     </div>
                     <div class="form-group">
                          <label for="price-adjustment">Ajuste de Preço (%)</label>
-                         <input type="number" id="price-adjustment" value="0" step="0.1" placeholder="Ex: -5 para 5% de desconto">
+                         <input type="number" id="price-adjustment" value="0" step="0.1" placeholder="Ex: -5 para desconto">
                     </div>
                 </div>
 
                 <h2>Valor Total do Orçamento</h2>
                 <div id="total-cost">R$ 0,00</div>
                 
-                <button type="submit" class="btn btn-primary" id="download-pdf-btn">Gerar e Baixar PDF</button>
+                <button type="button" class="btn btn-primary" id="submit-btn">Gerar Orçamento</button>
                 <div id="status-message" class="hidden"></div>
             </div>
         </form>

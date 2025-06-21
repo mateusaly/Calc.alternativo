@@ -1,7 +1,4 @@
-// VERSÃO FINALÍSSIMA - 19/06/2025
 document.addEventListener('DOMContentLoaded', () => {
-
-    console.log("Script final iniciado.");
 
     // ===================================================================================
     // 1. CONFIGURAÇÃO E CONSTANTES
@@ -10,9 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const ORCAMENTOS_BOARD_ID = 9373086154;
     const PRECO_M2_COLUMN_ID = "numeric_mkrybp6w";
     const ESTOQUE_COLUMN_ID = "numeric_mkryfs28";
+    const SALESPERSON_COLUMN_ID = "text_mks0v79y";
+    const CLIENT_COLUMN_ID = "text_mkry3fgw";
+    const EMAIL_COLUMN_ID = "email_mks08rq9";
+    const TOTAL_COLUMN_ID = "numeric_mkryvq1k";
+    const ITEMS_COLUMN_ID = "text_mkry6hxt";
+    const DATE_COLUMN_ID = "data";
     const JSON_DATA_COLUMN_ID = "text_mkry709q";
+
     const ITENS_PEDRA = ['Bancada', 'Fechamento lateral esquerdo', 'Frontão', 'Saia', 'Rodabase', 'Tabeira', 'Baguete', 'Soleira', 'Pingadeira', 'Virada', 'Borda de Piscina', 'Divisória', 'Escada Pisada', 'Escada Espelho', 'Lavatório Esculpido', 'Lavatório com Cuba', 'Mesa', 'Painel', 'Painel de Parede', 'Patamar', 'Peitoril', 'Rodapé'];
     const PRECOS_CUBAS = { 'Cuba 01 (Cozinha / Área Gourmet)': 450.00, 'Cuba 02 (Cozinha / Área Gourmet)': 550.00, 'Cuba Lavatório': 300.00, 'Cuba Lavanderia': 250.00 };
+    
     let materialsData = [];
     let historyData = [];
 
@@ -21,20 +26,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     const form = document.getElementById('quote-form');
     const historySelect = document.getElementById('history-select');
+    const loadQuoteBtn = document.getElementById('load-quote-btn');
+    const salespersonNameInput = document.getElementById('salesperson-name');
+    const quoteDateInput = document.getElementById('quote-date');
+    const clientNameInput = document.getElementById('client-name');
+    const clientEmailInput = document.getElementById('client-email');
+    const clientPhoneInput = document.getElementById('client-phone');
+    const clientCpfCnpjInput = document.getElementById('client-cpf-cnpj');
+    const clientAddressStreetInput = document.getElementById('client-address-street');
+    const clientAddressNumberInput = document.getElementById('client-address-number');
+    const clientAddressZipInput = document.getElementById('client-address-zip');
+    const clientAddressComplementInput = document.getElementById('client-address-complement');
     const materialSelect = document.getElementById('material-select');
+    const refreshMaterialsBtn = document.getElementById('refresh-materials-btn');
+    const stockInfoDisplay = document.getElementById('stock-info');
     const environmentsContainer = document.getElementById('environments-container');
     const addEnvironmentBtn = document.getElementById('add-environment-btn');
     const environmentTemplate = document.getElementById('environment-template').firstElementChild;
     const cubasContainer = document.getElementById('cubas-container');
+    const freteInput = document.getElementById('frete-input');
+    const priceAdjustmentInput = document.getElementById('price-adjustment');
     const totalCostDisplay = document.getElementById('total-cost');
     const costBreakdownContainer = document.getElementById('cost-breakdown');
-    const priceAdjustmentInput = document.getElementById('price-adjustment');
-    const freteInput = document.getElementById('frete-input');
-    const refreshMaterialsBtn = document.getElementById('refresh-materials-btn');
-
+    const submitBtn = document.getElementById('submit-btn');
+    const statusMessageDiv = document.getElementById('status-message');
 
     // ===================================================================================
-    // 3. FUNÇÕES DE API (JÁ VALIDADAS)
+    // 3. FUNÇÕES DE API
     // ===================================================================================
     async function mondayApiCall(query) {
         const response = await fetch('/api/monday', {
@@ -49,40 +67,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
     }
 
-    async function fetchMaterials() {
-        materialSelect.innerHTML = '<option>Buscando materiais...</option>';
+    async function fetchWithUiUpdate(apiCall, selectElement, successCallback) {
+        selectElement.innerHTML = '<option>Buscando...</option>';
         try {
-            // CORREÇÃO: Removida a vírgula entre 'name' e 'column_values'
-            const query = `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name column_values(ids:["${PRECO_M2_COLUMN_ID}"]) { id text } } } } }`;
-            const response = await mondayApiCall(query);
-            materialsData = response.data.boards[0].items_page.items;
-            populateMaterials();
+            const response = await mondayApiCall(apiCall.query);
+            successCallback(response.data);
         } catch (error) {
-            console.error("Erro ao buscar materiais:", error);
-            materialSelect.innerHTML = '<option>Erro ao carregar.</option>';
+            console.error(`Erro em ${apiCall.name}:`, error);
+            selectElement.innerHTML = '<option>Erro ao carregar.</option>';
         }
     }
 
-    async function fetchHistory() {
-        historySelect.innerHTML = '<option>Buscando histórico...</option>';
-        try {
-            // CORREÇÃO: Removida a vírgula entre 'name' e 'column_values'
-            const query = `query { boards(ids: ${ORCAMENTOS_BOARD_ID}) { items_page(limit: 100) { items { id name column_values(ids: ["${JSON_DATA_COLUMN_ID}"]) { text } } } } }`;
-            const response = await mondayApiCall(query);
-            historyData = response.data.boards[0].items_page.items;
-            populateHistory();
-        } catch (error) {
-            console.error("Erro ao buscar histórico:", error);
-            historySelect.innerHTML = '<option>Erro ao carregar.</option>';
-        }
-    }
-    
-    // ... (restante das funções: sendQuoteToMonday, populate, calculate, etc., não precisam de alteração)
-    // Para garantir, o código completo com todas as funções corretas está abaixo.
-    
-    function populateHistory() {
+    // ===================================================================================
+    // 4. LÓGICA DA UI E CÁLCULOS
+    // ===================================================================================
+    function populateHistory(data) {
+        historyData = data.boards[0].items_page.items;
         historySelect.innerHTML = '<option value="">-- Histórico --</option>';
-        historyData.sort((a,b) => b.id - a.id).forEach(item => {
+        historyData.sort((a, b) => b.id - a.id).forEach(item => {
             const option = document.createElement('option');
             option.value = item.id;
             option.textContent = item.name;
@@ -90,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function populateMaterials() {
+    function populateMaterials(data) {
+        materialsData = data.boards[0].items_page.items;
         materialSelect.innerHTML = '<option value="">-- Selecione um Material --</option>';
         materialsData.sort((a,b) => a.name.localeCompare(b.name)).forEach(item => {
             const price = item.column_values.find(c => c.id === PRECO_M2_COLUMN_ID)?.text || '0';
@@ -110,45 +113,144 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addEnvironment() {
-    const newEnvironment = environmentTemplate.cloneNode(true);
-    const stoneItemsContainer = newEnvironment.querySelector('.stone-items-container');
-    stoneItemsContainer.innerHTML = '';
-    ITENS_PEDRA.forEach(item => {
-        const uniqueId = `item-${Date.now()}-${Math.random()}`;
-        // CÓDIGO ATUALIZADO COM OS 4 CAMPOS CONFORME SOLICITADO
-        stoneItemsContainer.innerHTML += `
-            <div>
-                <label><input type="checkbox" class="stone-item-cb" value="${item}"> ${item}</label>
-                <div id="${uniqueId}" class="item-medidas hidden">
-                    <input type="number" step="1" min="0" class="medida" placeholder="Comprimento (cm)">
-                    <input type="number" step="1" min="0" class="medida" placeholder="Largura (cm)">
-                    <input type="number" step="1" min="0" class="medida-opcional" placeholder="Medida Opcional (cm)">
-                    <input type="text" class="anotacao" placeholder="Anotações">
-                </div>
-            </div>`;
-    });
-    environmentsContainer.appendChild(newEnvironment);
-}
-    
-    function calculateTotal() { /* ... código da função como na penúltima resposta ... */ }
-    function updateBreakdownUI(items, subtotal, frete, ajuste) { /* ... código da função como na penúltima resposta ... */ }
-    function handleFormChange() { /* ... código da função como na penúltima resposta ... */ }
+        const newEnvironment = environmentTemplate.cloneNode(true);
+        const stoneItemsContainer = newEnvironment.querySelector('.stone-items-container');
+        stoneItemsContainer.innerHTML = '';
+        ITENS_PEDRA.forEach(item => {
+            const uniqueId = `item-${Date.now()}-${Math.random()}`;
+            stoneItemsContainer.innerHTML += `
+                <div>
+                    <label><input type="checkbox" class="stone-item-cb" value="${item}"> ${item}</label>
+                    <div id="${uniqueId}" class="item-medidas hidden">
+                        <input type="number" step="1" min="0" class="medida" placeholder="Comprimento (cm)">
+                        <input type="number" step="1" min="0" class="medida" placeholder="Largura (cm)">
+                        <input type="number" step="1" min="0" class="medida-opcional" placeholder="Medida Opcional (cm)">
+                        <input type="text" class="anotacao" placeholder="Anotações">
+                    </div>
+                </div>`;
+        });
+        environmentsContainer.appendChild(newEnvironment);
+    }
+
+    function calculateTotal() {
+        let subtotalCost = 0;
+        let totalLinearMeters = 0;
+        let breakdownItems = [];
+        const selectedMaterialName = materialSelect.value;
+        const materialInfo = materialsData.find(m => m.name === selectedMaterialName);
+        const materialPricePerM2 = materialInfo ? parseFloat(materialInfo.column_values.find(c => c.id === PRECO_M2_COLUMN_ID)?.text || '0') : 0;
+
+        document.querySelectorAll('.environment-block').forEach(envBlock => {
+            const envName = envBlock.querySelector('.environment-name').value.trim() || "Ambiente";
+            envBlock.querySelectorAll('.stone-item-cb:checked').forEach(checkbox => {
+                const medidasInputs = checkbox.closest('div').querySelector('.item-medidas').querySelectorAll('.medida');
+                const comprimentoCm = parseFloat(medidasInputs[0].value) || 0;
+                const larguraCm = parseFloat(medidasInputs[1].value) || 0;
+
+                if (comprimentoCm > 0 && larguraCm > 0 && materialPricePerM2 > 0) {
+                    const areaM2 = (comprimentoCm / 100) * (larguraCm / 100);
+                    const linearMeters = ((comprimentoCm / 100) * 2) + ((larguraCm / 100) * 2);
+                    const itemCost = areaM2 * materialPricePerM2;
+                    subtotalCost += itemCost;
+                    totalLinearMeters += linearMeters;
+                    breakdownItems.push({ category: 'Peças de Pedra', description: `${checkbox.value} (${envName})`, details: `${areaM2.toFixed(3)} m²`, subtotal: itemCost });
+                }
+            });
+        });
+        
+        document.querySelectorAll('input[name="cuba"]:checked').forEach(cuba => {
+            const price = PRECOS_CUBAS[cuba.value];
+            subtotalCost += price;
+            breakdownItems.push({ category: 'Cubas', description: cuba.value, details: '1 un.', subtotal: price });
+        });
+
+        const localidade = document.querySelector('input[name="localidade"]:checked').value;
+        let maoDeObraCost = 0;
+        if (totalLinearMeters > 0) {
+            const custoLinear = totalLinearMeters * 200;
+            if (localidade === 'mogi') {
+                maoDeObraCost = Math.max(200, custoLinear);
+                breakdownItems.push({ category: 'Mão de Obra', description: `Serviço - Mogi e Região`, details: `${totalLinearMeters.toFixed(2)}m lineares`, subtotal: maoDeObraCost });
+            } else if (localidade === 'sp') {
+                maoDeObraCost = Math.max(280, custoLinear);
+                breakdownItems.push({ category: 'Mão de Obra', description: `Serviço - Capital SP`, details: `${totalLinearMeters.toFixed(2)}m lineares`, subtotal: maoDeObraCost });
+            }
+        }
+
+        const frete = parseFloat(freteInput.value) || 0;
+        const ajustePercentual = parseFloat(priceAdjustmentInput.value) || 0;
+        const subtotalFinal = subtotalCost + maoDeObraCost;
+        const ajusteValor = subtotalFinal * (ajustePercentual / 100);
+        const totalCost = subtotalFinal + frete + ajusteValor;
+
+        return { totalCost, breakdownItems, subtotal: subtotalFinal, frete, ajuste: ajusteValor };
+    }
+
+    function updateBreakdownUI(result) {
+        totalCostDisplay.textContent = `R$ ${result.totalCost.toFixed(2)}`;
+        if (result.breakdownItems.length === 0) {
+            costBreakdownContainer.innerHTML = `<p class="breakdown-placeholder">Preencha os campos para ver o resumo detalhado.</p>`;
+            return;
+        }
+        let html = `<table><thead><tr><th>Descrição</th><th>Detalhes</th><th>Subtotal</th></tr></thead><tbody>`;
+        let currentCategory = "";
+        result.breakdownItems.forEach(item => {
+            if (item.category !== currentCategory) {
+                currentCategory = item.category;
+                html += `<tr class="category-header"><td colspan="3">${currentCategory}</td></tr>`;
+            }
+            html += `<tr><td>${item.description}</td><td>${item.details}</td><td>R$ ${item.subtotal.toFixed(2)}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+        html += `<table style="margin-top: 20px; width: 50%; float: right; text-align: right; border: none;">
+                    <tr style="border: none;"><td style="font-weight: bold; border: none;">Subtotal dos Itens:</td><td style="border: none;">R$ ${result.subtotal.toFixed(2)}</td></tr>
+                    <tr style="border: none;"><td style="font-weight: bold; border: none;">Frete:</td><td style="border: none;">R$ ${result.frete.toFixed(2)}</td></tr>
+                    <tr style="border: none;"><td style="font-weight: bold; border: none;">Ajuste (${result.ajuste >= 0 ? '+' : ''}${priceAdjustmentInput.value || 0}%):</td><td style="border: none;">R$ ${result.ajuste.toFixed(2)}</td></tr>
+                 </table><div style="clear:both;"></div>`;
+        costBreakdownContainer.innerHTML = html;
+    }
+
+    function handleFormChange() {
+        const result = calculateTotal();
+        updateBreakdownUI(result);
+    }
     
     // ===================================================================================
-    // 5. EVENT LISTENERS E INICIALIZAÇÃO
+    // 5. EVENT LISTENERS
     // ===================================================================================
-    
     form.addEventListener('input', handleFormChange);
     addEnvironmentBtn.addEventListener('click', addEnvironment);
-    // ... outros listeners ...
+    
+    environmentsContainer.addEventListener('change', (e) => {
+        if (e.target.classList.contains('stone-item-cb')) {
+            const medidasDiv = e.target.parentElement.nextElementSibling;
+            if (medidasDiv && medidasDiv.classList.contains('item-medidas')) {
+                medidasDiv.classList.toggle('hidden', !e.target.checked);
+            }
+        }
+    });
 
+    environmentsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-environment-btn')) {
+            e.target.closest('.environment-block').remove();
+            handleFormChange();
+        }
+    });
+    
+    // AINDA NÃO IMPLEMENTADO COMPLETAMENTE
+    loadQuoteBtn.addEventListener('click', () => { alert("Funcionalidade de carregar histórico em desenvolvimento."); });
+    submitBtn.addEventListener('click', () => { alert("Funcionalidade de gerar PDF em desenvolvimento."); });
+
+
+    // ===================================================================================
+    // 6. INICIALIZAÇÃO
+    // ===================================================================================
     function init() {
-        const quoteDateInput = document.getElementById('quote-date');
         quoteDateInput.valueAsDate = new Date();
         populateCheckboxes();
         addEnvironment();
-        fetchMaterials();
-        fetchHistory();
+        fetchWithUiUpdate({name: 'fetchMaterials', query: `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name column_values(ids:["${PRECO_M2_COLUMN_ID}"]) { text } } } } }`}, materialSelect, populateMaterials);
+        fetchWithUiUpdate({name: 'fetchHistory', query: `query { boards(ids: ${ORCAMENTOS_BOARD_ID}) { items_page(limit: 100) { items { id name } } } }`}, historySelect, populateHistory);
         handleFormChange();
     }
 
