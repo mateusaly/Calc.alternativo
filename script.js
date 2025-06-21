@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ITENS_PEDRA = ['Bancada', 'Fechamento lateral esquerdo', 'Frontão', 'Saia', 'Rodabase', 'Tabeira', 'Baguete', 'Soleira', 'Pingadeira', 'Virada', 'Borda de Piscina', 'Divisória', 'Escada Pisada', 'Escada Espelho', 'Lavatório Esculpido', 'Lavatório com Cuba', 'Mesa', 'Painel', 'Painel de Parede', 'Patamar', 'Peitoril', 'Rodapé'];
     const PRECOS_CUBAS = { 'Cuba 01 (Cozinha / Área Gourmet)': 450.00, 'Cuba 02 (Cozinha / Área Gourmet)': 550.00, 'Cuba Lavatório': 300.00, 'Cuba Lavanderia': 250.00 };
-    const LOGO_BASE64 = "data:image/jpeg;base64,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A0RmgOryPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8ny/0vv/AAxJ8v8AS+/9jRmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfN/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIi-";
+    const LOGO_BASE64 = "data:image/jpeg;base64,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A0RmgOryPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8ny/0vv/AAxJ8v8AS+/9jRmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfN/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagO7yPL/S+/8ADEnzf0vv/Y0RmgO7yPN/S+/8MSfL/S+/8Bo0ZoDu8jy/0vv/AAxJ839L7/wGjRmgO7yPN/S+/wDDEnzf0vv/AAGjRmgO7yPN/S+/8MSfN/S+/wDAY0ZoDu8jy/0vv/DEny/0vv/Y0RmgO7yPL/S+/wDDEny/0vv/AGNEZoDu8jy/0vv/AAxJ8v8AS+/9jRGagCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAi-";
     let materialsData = [];
     let historyData = [];
 
@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientAddressComplementInput = document.getElementById('client-address-complement');
     const materialSelect = document.getElementById('material-select');
     const refreshMaterialsBtn = document.getElementById('refresh-materials-btn');
-    const stockInfoDisplay = document.getElementById('stock-info');
     const environmentsContainer = document.getElementById('environments-container');
     const addEnvironmentBtn = document.getElementById('add-environment-btn');
     const environmentTemplate = document.getElementById('environment-template').firstElementChild;
@@ -55,19 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     // 3. FUNÇÕES DE API
     // ===================================================================================
-    async function mondayApiCall(query) {
+    async function mondayApiCall(query, variables = {}) {
         try {
             const response = await fetch('/api/monday', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query, variables }),
             });
             if (!response.ok) {
                 const errorBody = await response.text();
                 throw new Error(`Falha na chamada da API, status: ${response.status}, corpo: ${errorBody}`);
             }
-            return response.json();
-        } catch(error) {
+            const data = await response.json();
+            if (data.errors) {
+                throw new Error(data.errors.map(e => e.message).join('\n'));
+            }
+            return data.data;
+        } catch (error) {
             console.error("ERRO na chamada da API:", error);
             throw error;
         }
@@ -249,13 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     // 5. EVENT LISTENERS
     // ===================================================================================
-    form.addEventListener('input', handleFormChange);
+   form.addEventListener('input', handleFormChange);
     addEnvironmentBtn.addEventListener('click', addEnvironment);
-    refreshMaterialsBtn.addEventListener('click', () => {
-         const query = `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name, column_values(ids:["${PRECO_M2_COLUMN_ID}", "${ESTOQUE_COLUMN_ID}"]) { id, text } } } } }`;
-         fetchAndPopulate(materialSelect, query, (items) => { materialsData = items; }, populateMaterials);
-    });
-    
+    refreshMaterialsBtn.addEventListener('click', initDataFetch);
+
     environmentsContainer.addEventListener('change', (e) => {
         if (e.target.classList.contains('stone-item-cb')) {
             const medidasDiv = e.target.closest('label').nextElementSibling;
@@ -265,10 +265,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    environmentsContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-environment-btn')) {
-            e.target.closest('.environment-block').remove();
-            handleFormChange();
+    submitBtn.addEventListener('click', async () => {
+        // Lógica de validação do formulário...
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Gerando...';
+        showStatusMessage('Iniciando processo...', 'info');
+
+        try {
+            const formData = getFormDataAsObject();
+            const calcResult = calculateTotal();
+            const humanReadableDetails = generateHumanReadableDetails(calcResult);
+
+            showStatusMessage('Salvando no Monday.com...', 'info');
+            const newItemId = await sendQuoteToMonday({
+                ...formData,
+                totalCost: calcResult.totalCost,
+                humanReadableDetails,
+                jsonData: JSON.stringify(formData)
+            });
+
+            showStatusMessage('Gerando PDF...', 'info');
+            await generatePDF({ ...formData, ...calcResult, quoteNumber: `ORC-${newItemId}` });
+            
+            showStatusMessage(`Orçamento #${newItemId} salvo e PDF gerado!`, 'success');
+            form.reset();
+            init();
+
+        } catch (error) {
+            showStatusMessage(`Erro: ${error.message}`, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Gerar Orçamento';
         }
     });
     
@@ -280,15 +308,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         quoteDateInput.valueAsDate = new Date();
         populateCheckboxes();
+        environmentsContainer.innerHTML = ''; // Limpa ambientes antes de adicionar o primeiro
         addEnvironment();
-        
-        const materialsQuery = `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name, column_values(ids:["${PRECO_M2_COLUMN_ID}", "${ESTOQUE_COLUMN_ID}"]) { id, text } } } } }`;
-        fetchAndPopulate(materialSelect, materialsQuery, (items) => { materialsData = items; }, populateMaterials);
-
-        const historyQuery = `query { boards(ids: ${ORCAMENTOS_BOARD_ID}) { items_page(limit: 100) { items { id, name, column_values(ids: ["${JSON_DATA_COLUMN_ID}"]) { id, text } } } } }`;
-        fetchAndPopulate(historySelect, historyQuery, (items) => { historyData = items; }, populateHistory);
-        
+        initDataFetch();
         handleFormChange();
+    }
+
+    async function initDataFetch() {
+        const materialsQuery = `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name, column_values(ids:["${PRECO_M2_COLUMN_ID}"]) { id, text } } } } }`;
+        const historyQuery = `query { boards(ids: ${ORCAMENTOS_BOARD_ID}) { items_page(limit: 100) { items { id, name, column_values(ids: ["${JSON_DATA_COLUMN_ID}"]) { id, text } } } } }`;
+        
+        // Executa as duas buscas em paralelo
+        await Promise.all([
+            fetchAndPopulate(materialSelect, {name: 'fetchMaterials', query: materialsQuery}, (items) => { materialsData = items; }, populateMaterials),
+            fetchAndPopulate(historySelect, {name: 'fetchHistory', query: historyQuery}, (items) => { historyData = items; }, populateHistory)
+        ]);
     }
 
     init();
