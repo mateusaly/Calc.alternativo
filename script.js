@@ -92,19 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function fetchMaterials() {
-    materialSelect.innerHTML = '<option>Buscando materiais...</option>';
-    try {
-        // CORREÇÃO AQUI: Adicionado 'id' na query de column_values
-        const query = `query { boards(ids: ${ESTOQUE_BOARD_ID}) { items_page(limit: 500) { items { name, column_values(ids:["${PRECO_M2_COLUMN_ID}", "${ESTOQUE_COLUMN_ID}"]) { id, text } } } } }`;
-        const response = await mondayApiCall(query);
-        materialsData = response.data.boards[0].items_page.items;
-        populateMaterials();
-    } catch (error) {
-        console.error("Erro ao buscar materiais:", error);
-        materialSelect.innerHTML = '<option>Erro ao carregar.</option>';
+    function populateMaterials(data) {
+        materialsData = data.boards[0].items_page.items;
+        materialSelect.innerHTML = '<option value="">-- Selecione um Material --</option>';
+        materialsData.sort((a,b) => a.name.localeCompare(b.name)).forEach(item => {
+            const price = item.column_values.find(c => c.id === PRECO_M2_COLUMN_ID)?.text || '0';
+            const option = document.createElement('option');
+            option.value = item.name;
+            option.textContent = `${item.name} (R$ ${parseFloat(price).toFixed(2)} / m²)`;
+            materialSelect.appendChild(option);
+        });
     }
-}
 
     function populateCheckboxes() {
         cubasContainer.innerHTML = '';
